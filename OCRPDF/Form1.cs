@@ -102,7 +102,7 @@ namespace OCRPDF
             var openFileDialog1 = new OpenFileDialog
             {
                 InitialDirectory = System.Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-                Filter = "All files (*.*)|*.*|pdf files (*.pdf)|*.pdf",
+                Filter = "All files (*.*)|*.*|pdf files (*.pdf)|*.pdf|png files (*.png)|*.png",
                 FilterIndex = 2,
                 RestoreDirectory = true
             };
@@ -119,7 +119,14 @@ namespace OCRPDF
                 btnOpenFile.Enabled = false;
                 btnPage.Enabled = false;
                 //Pdf to Png
-                RunCmd($@"magick -density 300 ""{openFileDialog1.FileName}"" ""{Directory.GetCurrentDirectory()}\temp\pdf.png""");
+                if(openFileDialog1.FileName.Contains(".pdf"))
+                    RunCmd($@"magick -density 300 ""{openFileDialog1.FileName}"" ""{Directory.GetCurrentDirectory()}\temp\pdf.png""");
+                else
+                {
+                    var i = Image.FromFile(openFileDialog1.FileName);
+                    i.Save(@"temp\pdf.png");
+                    i.Dispose();
+                }
                 //Set pictureboxes
                 SetPictureBox(@"temp\" + new DirectoryInfo(@"temp\").GetFiles("pdf*.png")[0]);
                 //Reset extarcted text
@@ -127,7 +134,8 @@ namespace OCRPDF
                 //Set paths
                 txtPath.Text = openFileDialog1.SafeFileName;
                 //get text
-                btnCalculate_Click();
+                if(autoCalculate.Checked)
+                    btnCalculate_Click();
                 //Reset interaction
                 btnPage.Enabled = true;
                 btnCalculate.Enabled = true;
