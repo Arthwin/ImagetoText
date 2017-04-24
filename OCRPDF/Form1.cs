@@ -2,8 +2,14 @@
 using System.Drawing;
 using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
+//using from cmd:
+//1.tesseract OCR
+//https://github.com/tesseract-ocr
+//2. image magick
+//https://www.imagemagick.org/script/binary-releases.php
+//3. ghost script (must have for image magick)
+//https://ghostscript.com/download/gsdnld.html
 
 namespace OCRPDF
 {
