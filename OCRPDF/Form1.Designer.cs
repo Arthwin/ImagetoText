@@ -35,6 +35,7 @@
             this.btnCalculate = new System.Windows.Forms.Button();
             this.pbCrop = new System.Windows.Forms.PictureBox();
             this.btnPage = new System.Windows.Forms.Button();
+            this.autoCalculate = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pbOriginal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbCrop)).BeginInit();
             this.SuspendLayout();
@@ -62,9 +63,10 @@
             this.txtExtracted.Location = new System.Drawing.Point(9, 285);
             this.txtExtracted.Multiline = true;
             this.txtExtracted.Name = "txtExtracted";
-            this.txtExtracted.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtExtracted.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.txtExtracted.Size = new System.Drawing.Size(250, 250);
             this.txtExtracted.TabIndex = 7;
+            this.txtExtracted.WordWrap = false;
             // 
             // pbOriginal
             // 
@@ -116,11 +118,22 @@
             this.btnPage.UseVisualStyleBackColor = true;
             this.btnPage.Click += new System.EventHandler(this.btnPage_Click);
             // 
+            // autoCalculate
+            // 
+            this.autoCalculate.AutoSize = true;
+            this.autoCalculate.Location = new System.Drawing.Point(587, 8);
+            this.autoCalculate.Name = "autoCalculate";
+            this.autoCalculate.Size = new System.Drawing.Size(95, 17);
+            this.autoCalculate.TabIndex = 12;
+            this.autoCalculate.Text = "Auto Calculate";
+            this.autoCalculate.UseVisualStyleBackColor = true;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(775, 540);
+            this.Controls.Add(this.autoCalculate);
             this.Controls.Add(this.pbCrop);
             this.Controls.Add(this.btnPage);
             this.Controls.Add(this.pbOriginal);
@@ -146,6 +159,7 @@
         private System.Windows.Forms.Button btnCalculate;
         protected System.Windows.Forms.PictureBox pbCrop;
         private System.Windows.Forms.Button btnPage;
+        private System.Windows.Forms.CheckBox autoCalculate;
     }
 }
 

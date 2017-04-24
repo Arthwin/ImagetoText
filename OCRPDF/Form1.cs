@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 namespace OCRPDF
 {
+
     public partial class frmMain : Form
     {
         public frmMain()
@@ -81,6 +82,8 @@ namespace OCRPDF
             _cropStart2 = new Point(0, 0);
             pbCrop.Invalidate();
             txtExtracted.Text = "";
+            if (autoCalculate.Checked)
+                btnCalculate_Click();
         }
 
         #endregion
@@ -110,14 +113,15 @@ namespace OCRPDF
                 btnOpenFile.Enabled = false;
                 btnPage.Enabled = false;
                 //Pdf to Png
-                RunCmd("magick -density 300 " + openFileDialog1.FileName +
-                       " " + Directory.GetCurrentDirectory() + @"\temp\pdf.png");
+                RunCmd($@"magick -density 300 ""{openFileDialog1.FileName}"" ""{Directory.GetCurrentDirectory()}\temp\pdf.png""");
                 //Set pictureboxes
                 SetPictureBox(@"temp\" + new DirectoryInfo(@"temp\").GetFiles("pdf*.png")[0]);
                 //Reset extarcted text
                 txtExtracted.Text = "";
                 //Set paths
-                txtPath.Text = openFileDialog1.FileName;
+                txtPath.Text = openFileDialog1.SafeFileName;
+                //get text
+                btnCalculate_Click();
                 //Reset interaction
                 btnPage.Enabled = true;
                 btnCalculate.Enabled = true;
@@ -125,7 +129,7 @@ namespace OCRPDF
             }
         }
 
-        private void btnCalculate_Click(object sender, EventArgs e)
+        private void btnCalculate_Click(object sender = null, EventArgs e = null)
         {
             //Dont calculate if no file selected
             if (txtPath.Text == "") return;
@@ -137,9 +141,9 @@ namespace OCRPDF
             RunCmd("tesseract " + Directory.GetCurrentDirectory() + @"\temp\temp2.png " + 
                     Directory.GetCurrentDirectory() + @"\temp\out ");
             //Grab text, insert correct endlines, remove extra ones
-            txtExtracted.Text = Regex.Replace(File.ReadAllText(Directory.GetCurrentDirectory()
-                                + @"\temp\out.txt", Encoding.UTF8).Replace("\n", "\r\n"), @"[\r\n]+",
-                                "\r\n").TrimEnd('\r', '\n');
+            txtExtracted.Text = File.ReadAllText(Directory.GetCurrentDirectory()
+                                + @"\temp\out.txt", Encoding.UTF8).Replace("\n", "\r\n")
+                                .TrimEnd('\r', '\n');
             //Reset interaction
             btnPage.Enabled = true;
             btnCalculate.Enabled = true;
@@ -375,4 +379,5 @@ namespace OCRPDF
         #endregion
 
     }
+
 }
