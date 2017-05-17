@@ -2,7 +2,9 @@
 using System.Drawing;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
+
 //using from cmd:
 //1.tesseract OCR
 //https://github.com/tesseract-ocr
@@ -87,21 +89,202 @@ namespace OCRPDF
             _cropRectangle2 = new Rectangle(0, 0, 0, 0);
             _cropStart2 = new Point(0, 0);
             pbCrop.Invalidate();
-            txtExtracted.Text = "";
+            _text = "";
             if (autoCalculate.Checked)
                 btnCalculate_Click();
+        }
+
+        private string _text
+        {
+            set
+            {
+                if (!chkLocked.Checked)
+                    txtExtracted.Text =
+                        Regex.Replace(Regex.Replace(value.Replace("\r\n", "\n"), "[ ]+", " ").Replace("\n ", "\n"),
+                            "\n{3,}", "\n\n\n").Trim(' ').Trim('\n').Trim(' ');
+            }
+        }
+
+        private bool CheckKeyword(string word, Color color, int startIndex = 0)
+        {
+            if (txtExtracted.Text.ToLower().Contains(word))
+            {
+                try
+                {
+                    int index = -1;
+                    int selectStart = txtExtracted.SelectionStart;
+
+                    while ((index = txtExtracted.Text.ToLower().IndexOf(word, (index + 1))) != -1)
+                    {
+                        txtExtracted.Select((index + startIndex), word.Length);
+                        txtExtracted.SelectionColor = color;
+                        txtExtracted.SelectionFont = new Font(txtExtracted.Font, FontStyle.Bold);
+                        txtExtracted.Select(selectStart, 0);
+                        txtExtracted.SelectionColor = Color.Black;
+                        txtExtracted.SelectionFont = new Font(txtExtracted.Font, FontStyle.Regular);
+                    }
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        private void txtExtracted_TextChanged(object sender, EventArgs e)
+        {
+            txtFlags.Text = "";
+            bool found = false;
+            string[] keywords_potency =
+            {
+                "light", "lite", "ultra", "super", "extra", "xtra", "xtralite", "low", "mild", "lower", "reduced"
+            };
+            found = false;
+            foreach (var word in keywords_potency)
+                found = found | CheckKeyword(word, Color.Red);
+            if (found)
+                txtFlags.Text += "POTENCY;  ";
+            string[] keywords_contains =
+            {
+                "additive", "substance", "constituent", "ingredients", "proof"
+            };
+            found = false;
+            foreach (var word in keywords_contains)
+                found = found | CheckKeyword(word, Color.Red);
+            if (found)
+                txtFlags.Text += "CONTENTS;  ";
+            string[] keywords_harm =
+            {
+                "chemical", "toxin", "carcinogen", "nicotine", "tar", "cancer", "smok", "risk", "harm", "disease",
+                "exposure", "free", "does", "natural", "safe", "safer", "fewer", "less"
+            };
+            found = false;
+            foreach (var word in keywords_harm)
+                found = found | CheckKeyword(word, Color.Red);
+            if (found)
+                txtFlags.Text += "HARM;  ";
+            string[] keywords_endorsement =
+            {
+                "fda", "approved", "endorsed"
+            };
+            found = false;
+            foreach (var word in keywords_endorsement)
+                found = found | CheckKeyword(word, Color.Red);
+            if (found)
+                txtFlags.Text += "ENDORSEMENT;  ";
+            string[] keywords_gifts =
+            {
+                "gift", "item", "credit", "program", "contest", "reward", "redemption", "points", "cash"
+            };
+            found = false;
+            foreach (var word in keywords_gifts)
+                found = found | CheckKeyword(word, Color.Red);
+            if (found)
+                txtFlags.Text += "GIFT;  ";
+            string[] keywords_flavour =
+            {
+                "apple", "apricot", "avocado", "banana", "honey", "dessert", "caramel", "vanilla", "fruit", "menthol",
+                "bilberry", "blackberry", "blackcurrant", "blueberry", "boysenberry", "currant", "cherry", "berry",
+                "cherimoya", "cloudberry", "coconut", "cranberry", "custard", "damson", "date", "dragonfruit", "durian",
+                "elderberry", "feijoa", "fig", "goji", "gooseberry", "grape", "raisin", "grapefruit", "guava",
+                "honeyberry", "huckleberry", "jabuticaba", "jackfruit", "jambul", "jujube", "juniper", "kiwifruit",
+                "kumquat", "lemon", "lime", "loquat", "longan", "lychee", "mango", "marionberry", "melon", "cantaloupe",
+                "honeydew", "watermelon", "miracle", "mulberry", "nectarine", "nance", "olive", "orange", "blood",
+                "clementine", "mandarine", "tangerine", "papaya", "passionfruit", "peach", "pear", "persimmon",
+                "physalis", "plantain", "plum", "prune", "dried", "pineapple", "plumcot", "pluot", "pomegranate",
+                "pomelo", "purple", "quince", "raspberry", "salmonberry", "rambutan", "redcurrant", "salal", "salak",
+                "satsuma", "star", "strawberry", "tamarillo", "tamarind", "tomato", "ugli", "yuzu", "mint", "anise",
+                "cinnamon", "coriander", "clove", "tarragon", "thyme", "floral", "ginger", "jasmine", "lemongrass",
+                "rose", "rum", "vodka", "cocktail", "coffee", "cappuccino", "latte", "cocoa", "licorice", "chocolate"
+            };
+            found = false;
+            foreach (var word in keywords_flavour)
+                found = found | CheckKeyword(word, Color.Red);
+            if (found)
+                txtFlags.Text += "FLAVOUR;  ";
+            string[] keywords_mark =
+            {
+                "camel", "dukes", "maverick", "new", "pall", "predator", "nascar", "raceway", "speedway", "rodeo",
+                "revved", "stonewall", "warrior", "dixon", "silverfoiltubes", "thunder", "ocb", "event", "show"
+            };
+            found = false;
+            foreach (var word in keywords_mark)
+                found = found | CheckKeyword(word, Color.Red);
+            if (found)
+                txtFlags.Text += "COMPANY;  ";
+            string[] keywords_event =
+            {
+                "convention", "conference", "concert", "booth", "exhibit", "register", "expo", "vendor", "theme",
+                "venue", "mall"
+            };
+            found = false;
+            foreach (var word in keywords_event)
+                found = found | CheckKeyword(word, Color.Red);
+            if (found)
+                txtFlags.Text += "EVENT;  ";
+            string[] keywords_chemicals =
+            {
+                "light", "additives", "chemicals", "toxins", "carcinogens", "agent", "smo", "substances", "constituents",
+                "registered", "inspected", "cleared", "100pc"
+            };
+            found = false;
+            foreach (var word in keywords_chemicals)
+                found = found | CheckKeyword(word, Color.Red);
+            if (found)
+                txtFlags.Text += "CHEMICAL;  ";
+            string[] keywords_NSE =
+            {
+                "mangosteen", "crush", "caliber", "original", "reds", "straight", "wintergreen", "filter", "recessed",
+                "java", "tubes", "cigarette", "frosted", "xpert", "virgin", "party", "agents", "harmful", "contain",
+                "purchase", "exchange", "bold", "silver", "deep", "blue", "double", "xxl", "smoke", "smoking"
+            };
+            found = false;
+            foreach (var word in keywords_NSE)
+                found = found | CheckKeyword(word, Color.Red);
+            if (found)
+                txtFlags.Text += "NSE;  ";
+            string[] keywords_pipe =
+            {
+                "vaporize", "pipe", "cigar", "blunt", "water", "grind", "smoke", "vape"
+            };
+            found = false;
+            foreach (var word in keywords_pipe)
+                found = found | CheckKeyword(word, Color.Red);
+            if (found)
+                txtFlags.Text += "PIPES;  ";
+            string[] keywords_weed =
+            {
+                "weed", "marijuana", "ganja", "herb", "high", "dab"
+            };
+            found = false;
+            foreach (var word in keywords_weed)
+                found = found | CheckKeyword(word, Color.Red);
+            if (found)
+                txtFlags.Text += "MARIJUANA;  ";
+
+            if (CheckKeyword("@", Color.Blue))
+                txtFlags.Text += "EMAIL;  ";
+            if (CheckKeyword("www", Color.Blue))
+                txtFlags.Text += "WWW;  ";
+            if (CheckKeyword(".com", Color.Blue))
+                txtFlags.Text += "WEBPAGE;  ";
+            if (CheckKeyword("#", Color.Green))
+                txtFlags.Text += "HASHTAGS; ";
         }
 
         #endregion
 
         #region Buttons
 
+        private string _lastdir = Directory.GetCurrentDirectory() + @"\pdfs";
         private void btnOpenFile_Click(object sender, EventArgs e)
         {
             //Ask for file
             var openFileDialog1 = new OpenFileDialog
             {
-                InitialDirectory = System.Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                InitialDirectory = _lastdir,
                 Filter = "All files (*.*)|*.*|pdf files (*.pdf)|*.pdf|png files (*.png)|*.png",
                 FilterIndex = 2,
                 RestoreDirectory = true
@@ -130,11 +313,12 @@ namespace OCRPDF
                 //Set pictureboxes
                 SetPictureBox(@"temp\" + new DirectoryInfo(@"temp\").GetFiles("pdf*.png")[0]);
                 //Reset extarcted text
-                txtExtracted.Text = "";
+                _text = "";
                 //Set paths
                 txtPath.Text = openFileDialog1.SafeFileName;
+                _lastdir = Path.GetDirectoryName(openFileDialog1.FileName);
                 //get text
-                if(autoCalculate.Checked)
+                if (autoCalculate.Checked)
                     btnCalculate_Click();
                 //Reset interaction
                 btnPage.Enabled = true;
@@ -155,7 +339,7 @@ namespace OCRPDF
             RunCmd("tesseract " + Directory.GetCurrentDirectory() + @"\temp\temp2.png " + 
                     Directory.GetCurrentDirectory() + @"\temp\out ");
             //Grab text, insert correct endlines, remove extra ones
-            txtExtracted.Text = File.ReadAllText(Directory.GetCurrentDirectory()
+            _text = File.ReadAllText(Directory.GetCurrentDirectory()
                                 + @"\temp\out.txt", Encoding.UTF8).Replace("\n", "\r\n")
                                 .TrimEnd('\r', '\n');
             //Reset interaction
@@ -173,14 +357,14 @@ namespace OCRPDF
             {
                 SetPictureBox(@"temp\" + new DirectoryInfo(@"temp\").GetFiles("pdf*.png")[_current]);
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 _current = 0;
                 try
                 {
                     SetPictureBox(@"temp\" + new DirectoryInfo(@"temp\").GetFiles("pdf*.png")[_current]);
                 }
-                catch (Exception exception2)
+                catch (Exception)
                 {
                     pbCrop.Image = null;
                     pbCrop.Width = 500;
@@ -188,7 +372,7 @@ namespace OCRPDF
                     pbOriginal.Image = null;
                     pbOriginal.Width = 250;
                     pbOriginal.Height = 250;
-                    txtExtracted.Text = "";
+                    _text = "";
                     txtPath.Text = "";
                 }
             }
@@ -391,7 +575,5 @@ namespace OCRPDF
         }
 
         #endregion
-
     }
-
 }

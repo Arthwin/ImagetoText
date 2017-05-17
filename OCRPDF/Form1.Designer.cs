@@ -28,16 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.btnOpenFile = new System.Windows.Forms.Button();
             this.txtPath = new System.Windows.Forms.TextBox();
-            this.txtExtracted = new System.Windows.Forms.TextBox();
             this.pbOriginal = new System.Windows.Forms.PictureBox();
             this.btnCalculate = new System.Windows.Forms.Button();
             this.pbCrop = new System.Windows.Forms.PictureBox();
             this.btnPage = new System.Windows.Forms.Button();
             this.autoCalculate = new System.Windows.Forms.CheckBox();
+            this.txtExtracted = new System.Windows.Forms.RichTextBox();
+            this.chkLocked = new System.Windows.Forms.CheckBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.txtFlags = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pbOriginal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbCrop)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnOpenFile
@@ -57,16 +65,6 @@
             this.txtPath.Name = "txtPath";
             this.txtPath.Size = new System.Drawing.Size(168, 20);
             this.txtPath.TabIndex = 8;
-            // 
-            // txtExtracted
-            // 
-            this.txtExtracted.Location = new System.Drawing.Point(9, 285);
-            this.txtExtracted.Multiline = true;
-            this.txtExtracted.Name = "txtExtracted";
-            this.txtExtracted.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtExtracted.Size = new System.Drawing.Size(250, 250);
-            this.txtExtracted.TabIndex = 7;
-            this.txtExtracted.WordWrap = false;
             // 
             // pbOriginal
             // 
@@ -121,6 +119,8 @@
             // autoCalculate
             // 
             this.autoCalculate.AutoSize = true;
+            this.autoCalculate.Checked = true;
+            this.autoCalculate.CheckState = System.Windows.Forms.CheckState.Checked;
             this.autoCalculate.Location = new System.Drawing.Point(587, 8);
             this.autoCalculate.Name = "autoCalculate";
             this.autoCalculate.Size = new System.Drawing.Size(95, 17);
@@ -128,23 +128,94 @@
             this.autoCalculate.Text = "Auto Calculate";
             this.autoCalculate.UseVisualStyleBackColor = true;
             // 
+            // txtExtracted
+            // 
+            this.txtExtracted.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtExtracted.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtExtracted.Location = new System.Drawing.Point(0, 0);
+            this.txtExtracted.Name = "txtExtracted";
+            this.txtExtracted.Size = new System.Drawing.Size(248, 222);
+            this.txtExtracted.TabIndex = 13;
+            this.txtExtracted.Text = "";
+            this.txtExtracted.WordWrap = false;
+            this.txtExtracted.TextChanged += new System.EventHandler(this.txtExtracted_TextChanged);
+            // 
+            // chkLocked
+            // 
+            this.chkLocked.AutoSize = true;
+            this.chkLocked.Location = new System.Drawing.Point(209, 515);
+            this.chkLocked.Name = "chkLocked";
+            this.chkLocked.Size = new System.Drawing.Size(50, 17);
+            this.chkLocked.TabIndex = 14;
+            this.chkLocked.Text = "Lock";
+            this.chkLocked.UseVisualStyleBackColor = true;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(2, 518);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(64, 50);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 15;
+            this.pictureBox1.TabStop = false;
+            // 
+            // panel1
+            // 
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.txtExtracted);
+            this.panel1.Location = new System.Drawing.Point(9, 285);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(250, 224);
+            this.panel1.TabIndex = 16;
+            // 
+            // txtFlags
+            // 
+            this.txtFlags.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtFlags.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtFlags.ForeColor = System.Drawing.Color.DarkRed;
+            this.txtFlags.Location = new System.Drawing.Point(151, 548);
+            this.txtFlags.Name = "txtFlags";
+            this.txtFlags.Size = new System.Drawing.Size(612, 13);
+            this.txtFlags.TabIndex = 17;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(72, 544);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(73, 20);
+            this.label1.TabIndex = 18;
+            this.label1.Text = "FLAGS:";
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(775, 540);
+            this.BackColor = System.Drawing.Color.White;
+            this.ClientSize = new System.Drawing.Size(769, 574);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.txtFlags);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.chkLocked);
             this.Controls.Add(this.autoCalculate);
             this.Controls.Add(this.pbCrop);
             this.Controls.Add(this.btnPage);
             this.Controls.Add(this.pbOriginal);
             this.Controls.Add(this.btnOpenFile);
             this.Controls.Add(this.txtPath);
-            this.Controls.Add(this.txtExtracted);
             this.Controls.Add(this.btnCalculate);
+            this.Controls.Add(this.pictureBox1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
             this.Name = "frmMain";
-            this.Text = "PDF OCR";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "EurekaFacts PDF OCR";
             ((System.ComponentModel.ISupportInitialize)(this.pbOriginal)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbCrop)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -154,12 +225,17 @@
 
         private System.Windows.Forms.Button btnOpenFile;
         private System.Windows.Forms.TextBox txtPath;
-        private System.Windows.Forms.TextBox txtExtracted;
         protected System.Windows.Forms.PictureBox pbOriginal;
         private System.Windows.Forms.Button btnCalculate;
         protected System.Windows.Forms.PictureBox pbCrop;
         private System.Windows.Forms.Button btnPage;
         private System.Windows.Forms.CheckBox autoCalculate;
+        private System.Windows.Forms.RichTextBox txtExtracted;
+        private System.Windows.Forms.CheckBox chkLocked;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.TextBox txtFlags;
+        private System.Windows.Forms.Label label1;
     }
 }
 
